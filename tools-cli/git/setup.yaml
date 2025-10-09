@@ -1,0 +1,12 @@
+- name: Install Git
+  ansible.builtin.apt:
+    name: git
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Write gitconfig file
+  ansible.builtin.template:
+    src: ./tools-cli/git/gitconfig
+    dest: ~/.gitconfig
+  become_user: developer

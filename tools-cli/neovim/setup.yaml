@@ -1,0 +1,13 @@
+- name: Install NeoVim
+  ansible.builtin.apt:
+    name: neovim
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Write Neovim Configs
+  ansible.builtin.copy:
+    src: ./tools-cli/neovim/
+    dest: ~/.config/nvim/
+  become_user: developer
+

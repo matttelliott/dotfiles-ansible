@@ -1,0 +1,13 @@
+  - name: Install Tmux
+    ansible.builtin.apt:
+      name: tmux
+      state: latest
+    when: ansible_facts['os_family'] == "Debian"
+    become: true
+
+  - name: Write the tmux config file
+    ansible.builtin.template:
+      src: ./tools-cli/tmux/tmux.conf
+      dest: ~/.tmux.conf
+    become_user: developer
+

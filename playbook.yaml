@@ -1,0 +1,41 @@
+- name: Setup Users
+  hosts: all
+  vars:
+    sudoers:
+      - developer
+      - developer2
+  tasks:
+  - name: Setup Users
+    ansible.builtin.include_tasks:
+      file: ./platforms/debian/setup-users.yaml
+    when: ansible_facts['os_family'] == "Debian"
+
+- name: Setup Languages
+  hosts: all
+  tasks:
+  - name: Setup NodeJs
+    ansible.builtin.include_tasks:
+      file: ./tools-lang/node/setup.yaml
+
+- name: Setup CLI
+  hosts: all
+
+  tasks:
+  - name: Install System Updates
+    ansible.builtin.apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_facts['os_family'] == "Debian"
+    become: true
+
+  - name: Set Up Git
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/git/setup.yaml
+
+  - name: Set Up Tmux
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/tmux/setup.yaml
+
+  - name: Set Up NeoVim
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/neovim/setup.yaml

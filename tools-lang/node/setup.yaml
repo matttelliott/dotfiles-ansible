@@ -1,0 +1,36 @@
+- name: Install NodeJs
+  ansible.builtin.apt:
+    name: nodejs
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Install NPM
+  ansible.builtin.apt:
+    name: npm
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Install NVM
+  shell: "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
+  become: true
+  become_user: developer
+
+- name: Install Node LTS via NVM
+  ansible.builtin.shell: |
+    . ~/.nvm/nvm.sh
+    nvm install --lts
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: developer
+
+- name: Use Node LTS via NVM
+  ansible.builtin.shell: |
+    . ~/.nvm/nvm.sh
+    nvm use --lts
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: developer
