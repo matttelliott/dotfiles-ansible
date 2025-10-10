@@ -1,36 +1,43 @@
-- name: Install NodeJs
-  ansible.builtin.apt:
-    name: nodejs
-    state: latest
-  when: ansible_facts['os_family'] == "Debian"
-  become: true
+  - name: Install NodeJs
+    ansible.builtin.apt:
+      name: nodejs
+      state: latest
+    when: ansible_facts['os_family'] == "Debian"
+    become: true
 
-- name: Install NPM
-  ansible.builtin.apt:
-    name: npm
-    state: latest
-  when: ansible_facts['os_family'] == "Debian"
-  become: true
+  - name: Install NPM
+    ansible.builtin.apt:
+      name: npm
+      state: latest
+    when: ansible_facts['os_family'] == "Debian"
+    become: true
 
-- name: Install NVM
-  shell: "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
-  become: true
-  become_user: developer
+  - name: Install NVM
+    ansible.builtin.shell: |
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+    args:
+      executable: /bin/bash
+      creates: ~/.nvm/nvm.sh
+    become: true
+    become_user: developer
 
-- name: Install Node LTS via NVM
-  ansible.builtin.shell: |
-    . ~/.nvm/nvm.sh
-    nvm install --lts
-  args:
-    executable: /bin/bash
-  become: true
-  become_user: developer
+  - name: Source NVM in bashrc if not already present
+    ansible.builtin.lineinfile:
+      path: ~/.bashrc
+      line: 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+      create: yes
+    become: true
+    become_user: developer
 
-- name: Use Node LTS via NVM
-  ansible.builtin.shell: |
-    . ~/.nvm/nvm.sh
-    nvm use --lts
-  args:
-    executable: /bin/bash
-  become: true
-  become_user: developer
+  - name: Install Node LTS via NVM
+    ansible.builtin.shell: |
+      export NVM_DIR="$HOME/.nvm"
+      source "$NVM_DIR/nvm.sh"
+      nvm install --lts
+      nvm alias default lts/*
+    args:
+      executable: /bin/bash
+      creates: ~/.nvm/versions/node
+    become: true
+    become_user: developer
+

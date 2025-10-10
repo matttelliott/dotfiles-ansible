@@ -1,0 +1,21 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: debian:13
+    pre_build_image: true
+    privileged: true
+    command: /bin/bash -c "while true; do sleep 10000; done"
+    tmpfs:
+      - /run
+      - /tmp
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      instance:
+        ansible_user: root
+verifier:
+  name: testinfra
+

@@ -9,4 +9,5 @@
   ansible.builtin.template:
     src: ./tools-cli/git/gitconfig
     dest: ~/.gitconfig
+  become: true
   become_user: developer

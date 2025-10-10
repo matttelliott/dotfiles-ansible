@@ -9,5 +9,6 @@
     ansible.builtin.template:
       src: ./tools-cli/tmux/tmux.conf
       dest: ~/.tmux.conf
+    become: true
     become_user: developer
 

@@ -9,5 +9,6 @@
   ansible.builtin.copy:
     src: ./tools-cli/neovim/
     dest: ~/.config/nvim/
+  become: true
   become_user: developer
 

@@ -1,0 +1,4 @@
+---
+- name: Include main playbook
+  import_playbook: ../../playbook.yaml
+
