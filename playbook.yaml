@@ -44,3 +44,7 @@
   - name: Set Up NeoVim
     ansible.builtin.include_tasks:
       file: ./tools-cli/neovim/setup.yaml
+
+  - name: Set Up Mosh
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/mosh/setup.yaml

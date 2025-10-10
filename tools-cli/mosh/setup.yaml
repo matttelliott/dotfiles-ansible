@@ -1,0 +1,6 @@
+- name: Install Mosh
+  ansible.builtin.apt:
+    name: mosh
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
