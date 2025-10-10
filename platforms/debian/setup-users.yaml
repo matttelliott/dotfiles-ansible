@@ -24,3 +24,26 @@
   with_items: "{{ sudoers }}"
   when: ansible_facts['os_family'] == "Debian"
 
+- name: Create .ssh directory for sudoers users
+  become: true
+  file:
+    path: "/home/{{ item }}/.ssh"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0700'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Copy root's SSH keys to sudoers users
+  become: true
+  copy:
+    src: /root/.ssh/authorized_keys
+    dest: "/home/{{ item }}/.ssh/authorized_keys"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0600'
+    remote_src: yes
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+
