@@ -1,3 +1,14 @@
+- name: Update host system
+  hosts: all
+
+  tasks:
+  - name: Install System Updates
+    ansible.builtin.apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_facts['os_family'] == "Debian"
+    become: true
+
 - name: Setup Users
   hosts: all
   vars:
@@ -17,16 +28,10 @@
     ansible.builtin.include_tasks:
       file: ./tools-lang/node/setup.yaml
 
-- name: Setup CLI
+- name: Setup CLI Tools
   hosts: all
 
   tasks:
-  - name: Install System Updates
-    ansible.builtin.apt:
-      upgrade: dist
-      update_cache: yes
-    when: ansible_facts['os_family'] == "Debian"
-    become: true
 
   - name: Set Up Git
     ansible.builtin.include_tasks:
