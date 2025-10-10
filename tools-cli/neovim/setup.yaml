@@ -1,9 +1,25 @@
-- name: Install NeoVim
-  ansible.builtin.apt:
-    name: neovim
-    state: latest
-  when: ansible_facts['os_family'] == "Debian"
+- name: Download NeoVim AppImage
+  ansible.builtin.get_url:
+    url: https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-linux-x86_64.appimage
+    dest: /usr/local/bin/nvim.appimage
+    mode: '0755'
   become: true
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install FUSE for AppImage support
+  ansible.builtin.apt:
+    name: fuse3
+    state: latest
+  become: true
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Create symlink for nvim command
+  ansible.builtin.file:
+    src: /usr/local/bin/nvim.appimage
+    dest: /usr/local/bin/nvim
+    state: link
+  become: true
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Write Neovim Configs
   ansible.builtin.copy:
