@@ -1,0 +1,9 @@
+{% set fragments = [] %}
+{% for tool in ['git', 'neovim', 'shell', 'starship', 'zsh'] %}
+{%   set fragment_path = playbook_dir + '/tools-cli/' + tool + '/.zshrc' %}
+{%   if fragments.append(fragment_path) %}{% endif %}
+{% endfor %}
+{% for fragment in fragments | sort %}
+{{ lookup('file', fragment) }}
+
+{% endfor %}

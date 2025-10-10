@@ -35,6 +35,13 @@
   with_items: "{{ sudoers }}"
   when: ansible_facts['os_family'] == "Debian"
 
+- name: Check if root authorized_keys exists
+  become: true
+  stat:
+    path: /root/.ssh/authorized_keys
+  register: root_authorized_keys
+  when: ansible_facts['os_family'] == "Debian"
+
 - name: Copy root's SSH keys to sudoers users
   become: true
   copy:
@@ -45,5 +52,7 @@
     mode: '0600'
     remote_src: yes
   with_items: "{{ sudoers }}"
-  when: ansible_facts['os_family'] == "Debian"
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - root_authorized_keys.stat.exists
 

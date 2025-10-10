@@ -30,8 +30,16 @@
 
 - name: Setup CLI Tools
   hosts: all
+  vars:
+    sudoers:
+      - developer
+      - developer2
 
   tasks:
+
+  - name: Set Up Zsh
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/zsh/setup.yaml
 
   - name: Set Up Git
     ansible.builtin.include_tasks:
@@ -48,3 +56,7 @@
   - name: Set Up Mosh
     ansible.builtin.include_tasks:
       file: ./tools-cli/mosh/setup.yaml
+
+  - name: Set Up Starship
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/starship/setup.yaml

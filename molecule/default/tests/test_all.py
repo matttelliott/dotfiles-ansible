@@ -19,7 +19,9 @@ def load_test_module(module_path):
 # Load all test modules
 load_test_module(project_root / "platforms/debian/test_users.py")
 load_test_module(project_root / "tools-lang/node/test_node.py")
+load_test_module(project_root / "tools-cli/zsh/test_zsh.py")
 load_test_module(project_root / "tools-cli/git/test_git.py")
 load_test_module(project_root / "tools-cli/tmux/test_tmux.py")
 load_test_module(project_root / "tools-cli/neovim/test_neovim.py")
 load_test_module(project_root / "tools-cli/mosh/test_mosh.py")
+load_test_module(project_root / "tools-cli/starship/test_starship.py")

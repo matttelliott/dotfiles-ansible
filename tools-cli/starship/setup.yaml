@@ -1,0 +1,30 @@
+- name: Install starship
+  ansible.builtin.shell: |
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+  args:
+    executable: /bin/bash
+    creates: /usr/local/bin/starship
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Create .config directory for sudoers users
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.config"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0755'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Copy starship configuration for sudoers users
+  ansible.builtin.copy:
+    src: starship.toml
+    dest: "/home/{{ item }}/.config/starship.toml"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0644'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
