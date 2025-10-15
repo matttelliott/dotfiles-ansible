@@ -23,6 +23,10 @@
 
 - name: Setup Languages
   hosts: all
+  vars:
+    sudoers:
+      - developer
+      - developer2
   tasks:
   - name: Setup NodeJs
     ansible.builtin.include_tasks:
@@ -60,3 +64,15 @@
   - name: Set Up Starship
     ansible.builtin.include_tasks:
       file: ./tools-cli/starship/setup.yaml
+
+- name: Setup AI Tools
+  hosts: all
+  vars:
+    sudoers:
+      - developer
+      - developer2
+
+  tasks:
+  - name: Set Up Claude Code
+    ansible.builtin.include_tasks:
+      file: ./tools-ai/claude-code/setup.yaml

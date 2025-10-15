@@ -2,3 +2,12 @@
 __pycache__/
 *.pyc
 .molecule/
+
+# Infrastructure
+infrastructure/node_modules/
+infrastructure/bin/
+infrastructure/.pulumi/
+infrastructure/.env
+
+# Ansible Vault
+.vault_pass

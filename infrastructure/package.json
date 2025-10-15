@@ -1,0 +1,19 @@
+{
+  "name": "dotfiles-infrastructure",
+  "version": "1.0.0",
+  "description": "DigitalOcean infrastructure for dotfiles",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "teardown": "ts-node teardown.ts"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "^3.0.0",
+    "@pulumi/digitalocean": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  }
+}

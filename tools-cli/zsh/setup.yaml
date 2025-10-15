@@ -14,12 +14,15 @@
   become: true
 
 # Dynamically assemble .zshrc from all tool-specific fragments
-# Each tool in tools-cli/ can provide its own .zshrc file with tool-specific
+# Each tool in tools-*/ can provide its own .zshrc file with tool-specific
 # config/aliases. This task finds all .zshrc files and concatenates them into
 # the user's ~/.zshrc. No need to manually update this when adding new tools.
 - name: Find all .zshrc fragments
   ansible.builtin.find:
-    paths: "{{ playbook_dir }}/tools-cli"
+    paths:
+      - "{{ playbook_dir }}/tools-cli"
+      - "{{ playbook_dir }}/tools-lang"
+      - "{{ playbook_dir }}/tools-ai"
     patterns: "*.zshrc"
     recurse: yes
     file_type: file
@@ -44,4 +47,15 @@
   when:
     - ansible_facts['os_family'] == "Debian"
     - zshrc_fragments.files | length > 0
+  become: true
+
+- name: Copy .zprofile to ensure .zshrc is loaded on login
+  ansible.builtin.copy:
+    src: .zprofile
+    dest: "/home/{{ item }}/.zprofile"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0644'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
   become: true

@@ -1,0 +1,3 @@
+name: dotfiles-infrastructure
+runtime: nodejs
+description: DigitalOcean infrastructure for dotfiles provisioning

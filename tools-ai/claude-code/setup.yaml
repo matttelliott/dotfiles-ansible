@@ -1,0 +1,56 @@
+- name: Install claude-code via npm (using NVM)
+  ansible.builtin.shell: |
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh"
+    npm install -g @anthropic-ai/claude-code
+  args:
+    executable: /bin/bash
+    creates: ~/.nvm/versions/node/*/bin/claude
+  become: true
+  become_user: "{{ item }}"
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Create .config/claude directory for sudoers users
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.config/claude"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0700'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Copy Claude API key (encrypted)
+  ansible.builtin.copy:
+    src: files/api_key.txt
+    dest: "/home/{{ item }}/.config/claude/api_key.txt"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0600'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Create .claude directory for sudoers users
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.claude"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0755'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Copy CLAUDE.md (encrypted)
+  ansible.builtin.copy:
+    src: files/CLAUDE.md
+    dest: "/home/{{ item }}/.claude/CLAUDE.md"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0644'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true

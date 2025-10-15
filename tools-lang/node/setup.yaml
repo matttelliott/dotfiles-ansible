@@ -12,24 +12,26 @@
     when: ansible_facts['os_family'] == "Debian"
     become: true
 
-  - name: Install NVM
+  - name: Install NVM for sudoers users
     ansible.builtin.shell: |
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
     args:
       executable: /bin/bash
       creates: ~/.nvm/nvm.sh
     become: true
-    become_user: developer
+    become_user: "{{ item }}"
+    with_items: "{{ sudoers }}"
 
-  - name: Source NVM in bashrc if not already present
+  - name: Source NVM in bashrc if not already present for sudoers users
     ansible.builtin.lineinfile:
       path: ~/.bashrc
       line: 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
       create: yes
     become: true
-    become_user: developer
+    become_user: "{{ item }}"
+    with_items: "{{ sudoers }}"
 
-  - name: Install Node LTS via NVM
+  - name: Install Node LTS via NVM for sudoers users
     ansible.builtin.shell: |
       export NVM_DIR="$HOME/.nvm"
       source "$NVM_DIR/nvm.sh"
@@ -39,5 +41,6 @@
       executable: /bin/bash
       creates: ~/.nvm/versions/node
     become: true
-    become_user: developer
+    become_user: "{{ item }}"
+    with_items: "{{ sudoers }}"
 
