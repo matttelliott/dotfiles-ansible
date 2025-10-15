@@ -1,0 +1,68 @@
+- name: Install GitHub CLI dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gpg
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Add GitHub CLI repository key
+  ansible.builtin.shell: |
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/githubcli-archive-keyring.gpg
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Add GitHub CLI repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+    state: present
+    filename: github-cli
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Install GitHub CLI
+  ansible.builtin.apt:
+    name: gh
+    state: latest
+    update_cache: yes
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Create .config/gh directory for sudoers users
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.config/gh"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0700'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Copy GitHub token (encrypted)
+  ansible.builtin.copy:
+    src: files/github_token.txt
+    dest: "/home/{{ item }}/.config/gh/github_token"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0600'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Configure git credential helper to use token
+  ansible.builtin.blockinfile:
+    path: "/home/{{ item }}/.gitconfig"
+    marker: "# {mark} ANSIBLE MANAGED - GitHub credentials"
+    block: |
+      [credential "https://github.com"]
+              helper = "!f() { test \"$1\" = get && echo \"password=$(cat ~/.config/gh/github_token)\"; }; f"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0644'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
+  become: true

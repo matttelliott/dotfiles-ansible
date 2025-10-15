@@ -49,6 +49,10 @@
     ansible.builtin.include_tasks:
       file: ./tools-cli/git/setup.yaml
 
+  - name: Set Up GitHub CLI
+    ansible.builtin.include_tasks:
+      file: ./tools-cli/github-cli/setup.yaml
+
   - name: Set Up Tmux
     ansible.builtin.include_tasks:
       file: ./tools-cli/tmux/setup.yaml

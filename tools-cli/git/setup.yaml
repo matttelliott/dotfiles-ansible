@@ -5,9 +5,13 @@
   when: ansible_facts['os_family'] == "Debian"
   become: true
 
-- name: Write gitconfig file
-  ansible.builtin.template:
+- name: Write gitconfig file for sudoers users
+  ansible.builtin.copy:
     src: ./tools-cli/git/gitconfig
-    dest: ~/.gitconfig
+    dest: "/home/{{ item }}/.gitconfig"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0644'
+  with_items: "{{ sudoers }}"
+  when: ansible_facts['os_family'] == "Debian"
   become: true
-  become_user: developer
