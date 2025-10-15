@@ -59,7 +59,7 @@
     marker: "# {mark} ANSIBLE MANAGED - GitHub credentials"
     block: |
       [credential "https://github.com"]
-              helper = "!f() { test \"$1\" = get && echo \"password=$(cat ~/.config/gh/github_token)\"; }; f"
+              helper = "!f() { test \"$1\" = get && echo \"username=git\" && echo \"password=$(cat ~/.config/gh/github_token)\"; }; f"
     owner: "{{ item }}"
     group: "{{ item }}"
     mode: '0644'
